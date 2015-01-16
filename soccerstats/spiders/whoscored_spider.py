@@ -59,12 +59,6 @@ class WhoScoredSpider(CrawlSpider):
             players_involved = 0
             for player in team_data['players']:
                 player_id = player['playerId']
-                age = player['age']
-                height = player['height']
-                shirt = player['shirtNo'] if 'shirtNo' in player else -1
-                position = player['position']
-                name = player['name']
-                started = 'isFirstEleven' in player and player['isFirstEleven']
                 
                 ratings_array = player['stats']['ratings'] if 'ratings' in player['stats'] else None
                 if ratings_array:
@@ -74,10 +68,17 @@ class WhoScoredSpider(CrawlSpider):
                 else: 
                     rating = -1
                 
-                players[player_id] = {'age': age, 'height': height, 'shirt': shirt, 'position': position, 'name': name, 'started': started, 'rating': rating}
+                players[player_id] = {'age': player['age'], 
+                                      'height': player['height'], 
+                                      'shirt': player['shirtNo'] if 'shirtNo' in player else -1, 
+                                      'position': player['position'], 
+                                      'name': player['name'], 
+                                      'started': 'isFirstEleven' in player and player['isFirstEleven'], 
+                                      'rating': rating
+                                      }
                 
                 if player['isManOfTheMatch']:
-                    item['man_of_the_match'] = {'id': player_id, 'name': name}
+                    item['man_of_the_match'] = {'id': player_id, 'name': player['name']}
             
             item[pos + '_team_players'] = players
             item[pos + '_team_rating'] = team_rating / players_involved 
@@ -89,7 +90,7 @@ class WhoScoredSpider(CrawlSpider):
         whoscored_feed_url = get_project_settings().get('WHOSCORED_FEED_URL')
 
         if tournament and year and month:
-            return [whoscored_feed_url % (tournament, year, month)]
+            return [whoscored_feed_url % (tournament, year, month.zfill(2))]
 
         tournaments = get_project_settings().get('TOURNAMENTS')
         years = get_project_settings().get('TOURNAMENT_YEARS')
@@ -97,4 +98,4 @@ class WhoScoredSpider(CrawlSpider):
         dates = [(years[0], month) for month in xrange(06, 12)]
         dates.extend([(years[1], month) for month in xrange(01, 06)])
 
-        return [whoscored_feed_url % (tournament, year, month) for tournament in tournaments for (year, month) in dates]
+        return [whoscored_feed_url % (tournament, year, month.zfill(2)) for tournament in tournaments for (year, month) in dates]
