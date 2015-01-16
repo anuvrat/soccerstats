@@ -34,14 +34,18 @@ class WhoScoredSpider(CrawlSpider):
         :return: The rating items for both the teams.
         """
         
-        match_data = response.xpath('//script[contains(., "matchCentreData")]/text()').extract()[0]
+        match_data_element = response.xpath('//script[contains(., "matchCentreData")]/text()').extract()
+        if len(match_data_element) == 0:
+            return
+        
+        match_data = match_data_element[0]
         match_center_data = json.loads(re.search("matchCentreData = (.+?);", match_data).group(1))
 
         item = WhoScoredRatingsItem()
 
         item['match_id'] = re.search("matchId = (.+?);", match_data).group(1)
         item['venue_name'] = match_center_data['venueName']
-        item['referee_name'] = match_center_data['refereeName']
+        item['referee_name'] = match_center_data['refereeName'] if 'refereeName' in match_center_data else '' 
         item['start_time'] = match_center_data['startTime']
         item['competition'] = response.xpath('//div[@id="breadcrumb-nav"]/a/text()').extract()
         
