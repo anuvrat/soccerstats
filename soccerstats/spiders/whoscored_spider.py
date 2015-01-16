@@ -38,9 +38,49 @@ class WhoScoredSpider(CrawlSpider):
         match_center_data = json.loads(re.search("matchCentreData = (.+?);", match_data).group(1))
 
         item = WhoScoredRatingsItem()
+
         item['match_id'] = re.search("matchId = (.+?);", match_data).group(1)
-        
         item['venue_name'] = match_center_data['venueName']
+        item['referee_name'] = match_center_data['refereeName']
+        item['start_time'] = match_center_data['startTime']
+        
+        for pos in ['home', 'away']:
+            team_data = match_center_data[pos]
+            item[pos + '_team_id'] = team_data['teamId']
+            item[pos + '_team_name'] = team_data['name']
+            item[pos + '_team_average_age'] = team_data['averageAge']
+            item[pos + '_team_manager'] = team_data['managerName']
+            item[pos + '_team_formation'] = team_data['formations'][0]['formationName']
+            item[pos + '_team_score_halftime'] = team_data['scores']['halftime']
+            item[pos + '_team_score_fulltime'] = team_data['scores']['fulltime']
+            
+            players = {}
+            team_rating = 0.0
+            players_involved = 0
+            for player in team_data['players']:
+                player_id = player['playerId']
+                age = player['age']
+                height = player['height']
+                shirt = player['shirtNo'] if 'shirtNo' in player else -1
+                position = player['position']
+                name = player['name']
+                started = 'isFirstEleven' in player and player['isFirstEleven']
+                
+                ratings_array = player['stats']['ratings'] if 'ratings' in player['stats'] else None
+                if ratings_array:
+                    rating = ratings_array[max(ratings_array, key = int)]
+                    team_rating += rating
+                    players_involved += 1
+                else: 
+                    rating = -1
+                
+                players[player_id] = {'age': age, 'height': height, 'shirt': shirt, 'position': position, 'name': name, 'started': started, 'rating': rating}
+                
+                if player['isManOfTheMatch']:
+                    item['man_of_the_match'] = {'id': player_id, 'name': name}
+            
+            item[pos + '_team_players'] = players
+            item[pos + '_team_rating'] = team_rating / players_involved 
         
         return item
         
