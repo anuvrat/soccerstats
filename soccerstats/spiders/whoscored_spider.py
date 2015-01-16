@@ -43,6 +43,7 @@ class WhoScoredSpider(CrawlSpider):
         item['venue_name'] = match_center_data['venueName']
         item['referee_name'] = match_center_data['refereeName']
         item['start_time'] = match_center_data['startTime']
+        item['competition'] = response.xpath('//div[@id="breadcrumb-nav"]/a/text()').extract()
         
         for pos in ['home', 'away']:
             team_data = match_center_data[pos]
@@ -96,6 +97,6 @@ class WhoScoredSpider(CrawlSpider):
         years = get_project_settings().get('TOURNAMENT_YEARS')
 
         dates = [(years[0], month) for month in xrange(06, 12)]
-        dates.extend([(years[1], month) for month in xrange(01, 06)])
+        #dates.extend([(years[1], month) for month in xrange(01, 06)])
 
-        return [whoscored_feed_url % (tournament, year, month.zfill(2)) for tournament in tournaments for (year, month) in dates]
+        return [whoscored_feed_url % (tournament, year, str(month).zfill(2)) for tournament in tournaments for (year, month) in dates]

@@ -17,6 +17,7 @@ class WhoScoredRatingsItem(scrapy.Item):
     referee_name = scrapy.Field()
     start_time = scrapy.Field()
     man_of_the_match = scrapy.Field()
+    competition = scrapy.Field()
 
     home_team_id = scrapy.Field()
     home_team_name = scrapy.Field()

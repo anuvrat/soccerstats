@@ -10,7 +10,6 @@ from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.link import Link
 from scrapy.utils.project import get_project_settings
 
-
 class WhoScoredLinkExtractor(LinkExtractor):
     """
     Extract links from WhoScored Tournament Feed pages
