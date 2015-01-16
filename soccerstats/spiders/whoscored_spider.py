@@ -44,7 +44,7 @@ class WhoScoredSpider(CrawlSpider):
         item = WhoScoredRatingsItem()
 
         item['match_id'] = re.search("matchId = (.+?);", match_data).group(1)
-        item['venue_name'] = match_center_data['venueName']
+        item['venue_name'] = match_center_data['venueName'] if 'venueName' in match_center_data else ''
         item['referee_name'] = match_center_data['refereeName'] if 'refereeName' in match_center_data else '' 
         item['start_time'] = match_center_data['startTime']
         item['competition'] = response.xpath('//div[@id="breadcrumb-nav"]/a/text()').extract()

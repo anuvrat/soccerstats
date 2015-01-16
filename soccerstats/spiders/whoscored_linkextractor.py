@@ -23,4 +23,4 @@ class WhoScoredLinkExtractor(LinkExtractor):
         """
         match_page = get_project_settings().get('WHOSCORED_MATCH_FEED')
         
-        return [Link(match_page % match[0]) for match in ast.literal_eval(response.body)]
+        return [Link(match_page % match[0]) for match in ast.literal_eval(response.body.replace(',,', ',0,'))]

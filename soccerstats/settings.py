@@ -35,3 +35,12 @@ TOURNAMENTS = [9155,    # England-Premier-League-2014-2015
                10274    # International-FIFA-World-Cup-2014
                ]
 TOURNAMENT_YEARS = [2014, 2015]    # Years for the current season
+
+CONCURRENT_ITEMS = 200
+CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+ROBOTSTXT_OBEY = True
+COOKIES_ENABLED = False
+LOG_ENABLED = False
+
+LOG_FILE = 'application.log'

@@ -7,7 +7,7 @@ Created on Jan 16, 2015
 import scrapy.cmdline
 
 def main():
-    scrapy.cmdline.execute(argv=['scrapy', 'crawl', 'WhoScored', '-a', 'tournament=9187', '-a', 'year=2014', '-a', 'month=7'])
+    scrapy.cmdline.execute(argv=['scrapy', 'crawl', 'WhoScored', '-a', 'tournament=9155', '-a', 'year=2015', '-a', 'month=1'])
 
 if  __name__ =='__main__':
     main()
